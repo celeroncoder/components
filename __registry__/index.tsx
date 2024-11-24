@@ -16,6 +16,17 @@ export const Index: Record<string, any> = {
       subcategory: "undefined",
       chunks: []
     },
+    "select-with-search": {
+      name: "select-with-search",
+      type: "registry:ui",
+      registryDependencies: ["button","command","popover"],
+      files: ["registry/new-york/ui/select-with-search.tsx"],
+      component: React.lazy(() => import("@/registry/new-york/ui/select-with-search.tsx")),
+      source: "",
+      category: "undefined",
+      subcategory: "undefined",
+      chunks: []
+    },
     "accordion-demo": {
       name: "accordion-demo",
       type: "registry:example",
@@ -78,6 +89,17 @@ export const Index: Record<string, any> = {
       registryDependencies: undefined,
       files: ["registry/default/ui/accordion.tsx"],
       component: React.lazy(() => import("@/registry/default/ui/accordion.tsx")),
+      source: "",
+      category: "undefined",
+      subcategory: "undefined",
+      chunks: []
+    },
+    "select-with-search": {
+      name: "select-with-search",
+      type: "registry:ui",
+      registryDependencies: ["button","command","popover"],
+      files: ["registry/default/ui/select-with-search.tsx"],
+      component: React.lazy(() => import("@/registry/default/ui/select-with-search.tsx")),
       source: "",
       category: "undefined",
       subcategory: "undefined",
