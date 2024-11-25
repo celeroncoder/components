@@ -1,0 +1,204 @@
+---
+title: Select with Search
+description: A simple search input with a dropdown of options to select with search feat.
+---
+
+import { Preview } from "@/components/preview";
+import { SelectWithSearch } from "@/registry/default/ui/select-with-search";
+import { Steps } from "nextra/components";
+import { Tabs } from "nextra/components";
+
+## Preview
+
+<Preview>
+  <SelectWithSearch />
+</Preview>
+
+## Usage
+
+```jsx copy
+import React from "react";
+import { SelectWithSearch } from "@/components/ui/select-with-search";
+
+export default function App() {
+  const [value, setValue] = React.useState("");
+  const options = [
+    { label: "Option 1", value: "1" },
+    { label: "Option 2", value: "2" },
+    {
+      label: "Group 3",
+      options: [
+        { label: "Option 3.1", value: "3.1" },
+        { label: "Option 3.2", value: "3.2" },
+        ,
+      ],
+    },
+  ];
+
+  return (
+    <SelectWithSearch
+      options={options}
+      value={value}
+      onValueChange={(value) => setValue(value)}
+      disabled={false}
+      placeholder="Select an option"
+    />
+  );
+}
+```
+
+## Installation
+
+<Tabs items={['CLI', 'Manual']}>
+	<Tabs.Tab>
+		```bash npm2yarn copy
+		npx shadcn@latest add https://components.celeroncoder.com/r/styles/default/select-with-search.json
+		```
+	</Tabs.Tab>
+	<Tabs.Tab>
+		<Steps>
+    	{<h3>Installing required dependencies:</h3>}
+
+    	```bash npm2yarn copy
+    	npx shadcn@latest add button popover command
+    	```
+
+    	{<h3>Copy the following code into your project:</h3>}
+
+    	```tsx filename="select-with-search.tsx" copy
+    	"use client";
+
+    	import React from "react";
+    	import { Check, ChevronsUpDown } from "lucide-react";
+    	import { cn } from "@/lib/utils";
+    	import { Button } from "@/components/ui/button";
+    	import {
+    		Command,
+    		CommandEmpty,
+    		CommandGroup,
+    		CommandInput,
+    		CommandItem,
+    	} from "@/components/ui/command";
+    	import {
+    		Popover,
+    		PopoverContent,
+    		PopoverTrigger,
+    	} from "@/components/ui/popover";
+
+    	interface SelectOption {
+    		label: string;
+    		value: string;
+    	}
+
+    	interface SelectGroup {
+    		label: string;
+    		options: SelectOption[];
+    	}
+
+    	interface SelectWithSearchProps {
+    		options: (SelectOption | SelectGroup)[];
+    		placeholder?: string;
+    		value?: string;
+    		onValueChange: (value: string) => void;
+    		disabled?: boolean;
+    	}
+
+    	export function SelectWithSearch({
+    		options,
+    		placeholder = "Select an option",
+    		value,
+    		onValueChange,
+    		disabled = false,
+    	}: SelectWithSearchProps) {
+    		const [open, setOpen] = React.useState(false);
+
+    		const getCurrentLabel = React.useCallback(() => {
+    			if (!options) return placeholder;
+    			for (const item of options) {
+    				if ("options" in item) {
+    					const option = item.options.find((opt) => opt.value === value);
+    					if (option) return option.label;
+    				} else if (item.value === value) {
+    					return item.label;
+    				}
+    			}
+    			return placeholder;
+    		}, [options, value, placeholder]);
+
+    		const renderOptions = () => {
+    			if (!options || options.length === 0) {
+    				return <CommandEmpty>No options available.</CommandEmpty>;
+    			}
+
+    			return options.map((item, index) =>
+    				"options" in item ? (
+    					<CommandGroup key={index} heading={item.label}>
+    						{item.options.map((option) => (
+    							<CommandItem
+    								key={option.value}
+    								onSelect={() => {
+    									onValueChange(option.value);
+    									setOpen(false);
+    								}}
+    							>
+    								<Check
+    									className={cn(
+    										"mr-2 h-4 w-4",
+    										value === option.value ? "opacity-100" : "opacity-0"
+    									)}
+    								/>
+    								{option.label}
+    							</CommandItem>
+    						))}
+    					</CommandGroup>
+    				) : (
+    					<CommandItem
+    						key={item.value}
+    						onSelect={() => {
+    							onValueChange(item.value);
+    							setOpen(false);
+    						}}
+    					>
+    						<Check
+    							className={cn(
+    								"mr-2 h-4 w-4",
+    								value === item.value ? "opacity-100" : "opacity-0"
+    							)}
+    						/>
+    						{item.label}
+    					</CommandItem>
+    				)
+    			);
+    		};
+
+    		return (
+    			<Popover open={open} onOpenChange={setOpen}>
+    				<PopoverTrigger asChild>
+    					<Button
+    						variant="outline"
+    						role="combobox"
+    						aria-expanded={open}
+    						className="w-full justify-between"
+    						disabled={disabled}
+    					>
+    						{getCurrentLabel()}
+    						<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+    					</Button>
+    				</PopoverTrigger>
+    				<PopoverContent className="w-full p-0">
+    					<Command>
+    						<CommandInput
+    							placeholder={`Search ${placeholder.toLowerCase()}...`}
+    						/>
+    						{renderOptions()}
+    					</Command>
+    				</PopoverContent>
+    			</Popover>
+    		);
+    	}
+    	```
+
+    </Steps>
+
+</Tabs.Tab>
+</Tabs>
