@@ -2,9 +2,9 @@ import type { DocsThemeConfig } from "nextra-theme-docs";
 
 const config: DocsThemeConfig = {
   project: {
-    link: "https://github.com/celeroncoder/shadcn-registry",
+    link: "https://github.com/celeroncoder/components/",
   },
-  docsRepositoryBase: "https://github.com/shadcn-registry/blob/main",
+  docsRepositoryBase: "https://github.com/celeroncoder/components/tree/main",
   logo: <span>🧱 celeroncoder's components</span>,
   footer: {
     content: (
