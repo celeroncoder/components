@@ -9,6 +9,7 @@
     "registry:dev": "http-server",
     "dev": "next",
     "build": "next build",
+    "postinstall": "npm run build-registry",
     "start": "next start",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
