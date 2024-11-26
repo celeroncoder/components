@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import * as React from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -10,12 +10,15 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
 } from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 interface SelectOption {
   label: string;
@@ -43,6 +46,7 @@ export function SelectWithSearch({
   disabled = false,
 }: SelectWithSearchProps) {
   const [open, setOpen] = React.useState(false);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const getCurrentLabel = React.useCallback(() => {
     if (!options) return placeholder;
@@ -62,69 +66,86 @@ export function SelectWithSearch({
       return <CommandEmpty>No options available.</CommandEmpty>;
     }
 
-    return options.map((item, index) =>
-      "options" in item ? (
-        <CommandGroup key={index} heading={item.label}>
-          {item.options.map((option) => (
+    return (
+      <CommandList>
+        {options.map((item, index) =>
+          "options" in item ? (
+            <CommandGroup key={index} heading={item.label}>
+              {item.options.map((option) => (
+                <CommandItem
+                  key={option.value}
+                  onSelect={() => {
+                    onValueChange(option.value);
+                    setOpen(false);
+                  }}
+                >
+                  <Check
+                    className={cn(
+                      "mr-2 h-4 w-4",
+                      value === option.value ? "opacity-100" : "opacity-0"
+                    )}
+                  />
+                  {option.label}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          ) : (
             <CommandItem
-              key={option.value}
+              key={item.value}
               onSelect={() => {
-                onValueChange(option.value);
+                onValueChange(item.value);
                 setOpen(false);
               }}
             >
               <Check
                 className={cn(
                   "mr-2 h-4 w-4",
-                  value === option.value ? "opacity-100" : "opacity-0"
+                  value === item.value ? "opacity-100" : "opacity-0"
                 )}
               />
-              {option.label}
+              {item.label}
             </CommandItem>
-          ))}
-        </CommandGroup>
-      ) : (
-        <CommandItem
-          key={item.value}
-          onSelect={() => {
-            onValueChange(item.value);
-            setOpen(false);
-          }}
-        >
-          <Check
-            className={cn(
-              "mr-2 h-4 w-4",
-              value === item.value ? "opacity-100" : "opacity-0"
-            )}
-          />
-          {item.label}
-        </CommandItem>
-      )
+          )
+        )}
+      </CommandList>
     );
   };
 
+  const triggerButton = (
+    <Button
+      variant="outline"
+      role="combobox"
+      aria-expanded={open}
+      className="w-full justify-between"
+      disabled={disabled}
+    >
+      {getCurrentLabel()}
+      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+    </Button>
+  );
+
+  const commandContent = (
+    <Command>
+      <CommandInput placeholder={`Search ${placeholder.toLowerCase()}...`} />
+      {renderOptions()}
+    </Command>
+  );
+
+  if (isDesktop) {
+    return (
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>{triggerButton}</PopoverTrigger>
+        <PopoverContent className="w-full p-0">{commandContent}</PopoverContent>
+      </Popover>
+    );
+  }
+
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-full justify-between"
-          disabled={disabled}
-        >
-          {getCurrentLabel()}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-full p-0">
-        <Command>
-          <CommandInput
-            placeholder={`Search ${placeholder.toLowerCase()}...`}
-          />
-          {renderOptions()}
-        </Command>
-      </PopoverContent>
-    </Popover>
+    <Drawer open={open} onOpenChange={setOpen}>
+      <DrawerTrigger asChild>{triggerButton}</DrawerTrigger>
+      <DrawerContent>
+        <div className="mt-4 border-t">{commandContent}</div>
+      </DrawerContent>
+    </Drawer>
   );
 }
