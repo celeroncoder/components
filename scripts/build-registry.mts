@@ -452,7 +452,7 @@ async function buildStylesIndex() {
         "class-variance-authority",
         "lucide-react",
         // TODO: Remove this when we migrate to lucide-react.
-        style.name === "new-york" ? "@radix-ui/react-icons" : "",
+        // style.name === "new-york" ? "@radix-ui/react-icons" : "",
       ],
       registryDependencies: ["utils"],
       tailwind: {

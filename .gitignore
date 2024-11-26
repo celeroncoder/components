@@ -129,6 +129,9 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+# storybook
+*storybook.log
+
 # registry_output
 public/r
-*storybook.log
+__registry__
