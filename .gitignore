@@ -131,6 +131,7 @@ dist
 
 # storybook
 *storybook.log
+storybook-static/
 
 # registry_output
 public/r

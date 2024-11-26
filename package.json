@@ -12,7 +12,8 @@
     "postinstall": "npm run build-registry",
     "start": "next start",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "storybook:preview": "http-server storybook-static"
   },
   "keywords": [],
   "author": "",
@@ -41,6 +42,7 @@
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-popover": "^1.1.2",
     "@radix-ui/react-slot": "^1.1.0",
+    "@storybook/addon-viewport": "^8.4.5",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "1.0.0",
